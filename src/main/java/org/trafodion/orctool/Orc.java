@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -28,9 +30,11 @@ public class Orc {
         } else {
             configFile = Orc.class.getResourceAsStream("/traforc.properties");
         }
-        Properties conf = new Properties();
-        conf.load(configFile);
+        OrcConfig orcConfig  = new OrcConfig(configFile);
         configFile.close();
+
+        ExecutorService pool = Executors.newFixedThreadPool(orcConfig.getThreads());
+
 
     }
 
