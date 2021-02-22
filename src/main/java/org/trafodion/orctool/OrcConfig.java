@@ -7,7 +7,9 @@ import java.util.Properties;
 public class OrcConfig {
 
     private final String[] names = new String[]{
-        "fileName", "type", "platfile", "orcfile", "override", "separateSizeMB", "threads"};
+        "fileName", "type", "platfile", "orcfile", "override", "separateSizeMB", "threads",
+        "batchSize"};
+    private int batchSize;
     private String fileName;
     private int type;
     private String platfile;
@@ -19,13 +21,22 @@ public class OrcConfig {
     public OrcConfig(InputStream configFile) throws IOException {
         Properties conf = new Properties();
         conf.load(configFile);
-        this.fileName = conf.getProperty(names[0], "%1$s_%2$s");
+        this.fileName = conf.getProperty(names[0], "file_%1$s.%2$s");
         this.type = Integer.valueOf(conf.getProperty(names[1], "1"));
         this.platfile = conf.getProperty(names[2], "platfile");
         this.orcfile = conf.getProperty(names[3], "orcfile");
         this.override = Boolean.valueOf(conf.getProperty(names[4], "true"));
         this.separateSizeMB = Integer.valueOf(conf.getProperty(names[5], "64"));
         this.threads = Integer.valueOf(conf.getProperty(names[5], "10"));
+        this.batchSize = Integer.valueOf(conf.getProperty(names[5], "10000"));
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
     }
 
     public int getThreads() {
@@ -82,5 +93,15 @@ public class OrcConfig {
 
     public void setSeparateSizeMB(int separateSizeMB) {
         this.separateSizeMB = separateSizeMB;
+    }
+
+    public String getPostfix() {
+        switch (type) {
+            case 1:
+                return "orc";
+            case 2:
+                return "csv";
+        }
+        return "orc";
     }
 }
